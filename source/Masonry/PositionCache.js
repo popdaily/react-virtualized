@@ -41,6 +41,19 @@ export default class PositionCache {
     );
   }
 
+  getPosition(
+    index: number,
+    scrollTop: number,
+    clientHeight: number,
+    renderCallback: RenderCallback,
+  ): void {
+    this.range(scrollTop, scrollTop + clientHeight, (_index, left, top) => {
+      if (index === _index) {
+        renderCallback(_index, left, top);
+      }
+    });
+  }
+
   setPosition(index: number, left: number, top: number, height: number): void {
     this._intervalTree.insert([top, top + height, index]);
     this._leftMap[index] = left;
@@ -56,6 +69,10 @@ export default class PositionCache {
 
   get count(): number {
     return this._intervalTree.count;
+  }
+
+  get intervals(): number {
+    return this._intervalTree.intervals;
   }
 
   get shortestColumnSize(): number {

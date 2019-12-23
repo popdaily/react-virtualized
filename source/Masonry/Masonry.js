@@ -29,6 +29,7 @@ type Props = {
   tabIndex: number,
   width: number,
   rowDirection: string,
+  stamp: Array<any>,
 };
 
 type State = {
@@ -84,6 +85,7 @@ class Masonry extends React.PureComponent<Props, State> {
     style: emptyObject,
     tabIndex: 0,
     rowDirection: 'ltr',
+    fixed: [],
   };
 
   state = {
@@ -186,6 +188,7 @@ class Masonry extends React.PureComponent<Props, State> {
       tabIndex,
       width,
       rowDirection,
+      fixed,
     } = this.props;
 
     const {isScrolling, scrollTop} = this.state;
@@ -196,9 +199,53 @@ class Masonry extends React.PureComponent<Props, State> {
 
     const shortestColumnSize = this._positionCache.shortestColumnSize;
     const measuredCellCount = this._positionCache.count;
+    const measuredIntervals = this._positionCache.intervals;
 
     let startIndex = 0;
     let stopIndex;
+
+    // Fixed Cell Render
+    const checkFixedCellCache = measuredIntervals.filter(v => {
+      return fixed.includes(v[v.length - 1]);
+    });
+    const isFixed = index => {
+      const filter = checkFixedCellCache.filter(fixedCell => {
+        return fixedCell[fixedCell.length - 1] === index;
+      });
+      return filter.length > 0;
+    };
+
+    fixed.forEach(fixedIndex => {
+      this._positionCache.getPosition(
+        fixedIndex,
+        0,
+        estimateTotalHeight,
+        (index: number, left: number, top: number) => {
+          console.log({
+            height: cellMeasurerCache.getHeight(index),
+            width: cellMeasurerCache.getWidth(index),
+            position: 'absolute',
+            top,
+            [rowDirection === 'ltr' ? 'left' : 'right']: left,
+          });
+          children.push(
+            cellRenderer({
+              index,
+              isScrolling,
+              key: keyMapper(index),
+              parent: this,
+              style: {
+                height: cellMeasurerCache.getHeight(index),
+                width: cellMeasurerCache.getWidth(index),
+                position: 'absolute',
+                top,
+                [rowDirection === 'ltr' ? 'left' : 'right']: left,
+              },
+            }),
+          );
+        },
+      );
+    });
 
     this._positionCache.range(
       Math.max(0, scrollTop - overscanByPixels),
@@ -212,21 +259,23 @@ class Masonry extends React.PureComponent<Props, State> {
           stopIndex = Math.max(stopIndex, index);
         }
 
-        children.push(
-          cellRenderer({
-            index,
-            isScrolling,
-            key: keyMapper(index),
-            parent: this,
-            style: {
-              height: cellMeasurerCache.getHeight(index),
-              [rowDirection === 'ltr' ? 'left' : 'right']: left,
-              position: 'absolute',
-              top,
-              width: cellMeasurerCache.getWidth(index),
-            },
-          }),
-        );
+        if (!isFixed(index)) {
+          children.push(
+            cellRenderer({
+              index,
+              isScrolling,
+              key: keyMapper(index),
+              parent: this,
+              style: {
+                height: cellMeasurerCache.getHeight(index),
+                [rowDirection === 'ltr' ? 'left' : 'right']: left,
+                position: 'absolute',
+                top,
+                width: cellMeasurerCache.getWidth(index),
+              },
+            }),
+          );
+        }
       },
     );
 
@@ -252,17 +301,19 @@ class Masonry extends React.PureComponent<Props, State> {
       ) {
         stopIndex = index;
 
-        children.push(
-          cellRenderer({
-            index: index,
-            isScrolling,
-            key: keyMapper(index),
-            parent: this,
-            style: {
-              width: cellMeasurerCache.getWidth(index),
-            },
-          }),
-        );
+        if (!isFixed(index)) {
+          children.push(
+            cellRenderer({
+              index: index,
+              isScrolling,
+              key: keyMapper(index),
+              parent: this,
+              style: {
+                width: cellMeasurerCache.getWidth(index),
+              },
+            }),
+          );
+        }
       }
     }
 
