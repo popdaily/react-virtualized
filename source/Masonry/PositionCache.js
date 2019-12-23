@@ -41,7 +41,7 @@ export default class PositionCache {
     );
   }
 
-  getPosition(
+  getPositionByIndex(
     index: number,
     scrollTop: number,
     clientHeight: number,
@@ -69,10 +69,6 @@ export default class PositionCache {
 
   get count(): number {
     return this._intervalTree.count;
-  }
-
-  get intervals(): number {
-    return this._intervalTree.intervals;
   }
 
   get shortestColumnSize(): number {

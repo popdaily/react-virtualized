@@ -199,24 +199,12 @@ class Masonry extends React.PureComponent<Props, State> {
 
     const shortestColumnSize = this._positionCache.shortestColumnSize;
     const measuredCellCount = this._positionCache.count;
-    const measuredIntervals = this._positionCache.intervals;
 
     let startIndex = 0;
     let stopIndex;
 
-    // Fixed Cell Render
-    const checkFixedCellCache = measuredIntervals.filter(v => {
-      return fixed.includes(v[v.length - 1]);
-    });
-    const isFixed = index => {
-      const filter = checkFixedCellCache.filter(fixedCell => {
-        return fixedCell[fixedCell.length - 1] === index;
-      });
-      return filter.length > 0;
-    };
-
     fixed.forEach(fixedIndex => {
-      this._positionCache.getPosition(
+      this._positionCache.getPositionByIndex(
         fixedIndex,
         0,
         estimateTotalHeight,
@@ -259,7 +247,7 @@ class Masonry extends React.PureComponent<Props, State> {
           stopIndex = Math.max(stopIndex, index);
         }
 
-        if (!isFixed(index)) {
+        if (!fixed.includes(index)) {
           children.push(
             cellRenderer({
               index,
@@ -301,19 +289,17 @@ class Masonry extends React.PureComponent<Props, State> {
       ) {
         stopIndex = index;
 
-        if (!isFixed(index)) {
-          children.push(
-            cellRenderer({
-              index: index,
-              isScrolling,
-              key: keyMapper(index),
-              parent: this,
-              style: {
-                width: cellMeasurerCache.getWidth(index),
-              },
-            }),
-          );
-        }
+        children.push(
+          cellRenderer({
+            index: index,
+            isScrolling,
+            key: keyMapper(index),
+            parent: this,
+            style: {
+              width: cellMeasurerCache.getWidth(index),
+            },
+          }),
+        );
       }
     }
 
