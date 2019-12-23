@@ -210,13 +210,6 @@ class Masonry extends React.PureComponent<Props, State> {
         0,
         estimateTotalHeight,
         (index: number, left: number, top: number) => {
-          console.log({
-            height: cellMeasurerCache.getHeight(index),
-            width: cellMeasurerCache.getWidth(index),
-            position: 'absolute',
-            top,
-            [rowDirection === 'ltr' ? 'left' : 'right']: left,
-          });
           children.push(
             cellRenderer({
               index,
