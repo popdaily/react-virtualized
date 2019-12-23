@@ -205,25 +205,27 @@ class Masonry extends React.PureComponent<Props, State> {
 
     // Render Fixed Cells
     fixed.forEach(fixedIndex => {
-      this._positionCache.getPositionByIndex(
-        fixedIndex,
-        estimateTotalHeight,
+      this._positionCache.range(
+        0,
+        height + overscanByPixels * 2,
         (index: number, left: number, top: number) => {
-          children.push(
-            cellRenderer({
-              index,
-              isScrolling,
-              key: keyMapper(index),
-              parent: this,
-              style: {
-                height: cellMeasurerCache.getHeight(index),
-                width: cellMeasurerCache.getWidth(index),
-                position: 'absolute',
-                top,
-                [rowDirection === 'ltr' ? 'left' : 'right']: left,
-              },
-            }),
-          );
+          if (fixedIndex === index) {
+            children.push(
+              cellRenderer({
+                index,
+                isScrolling,
+                key: keyMapper(index),
+                parent: this,
+                style: {
+                  height: cellMeasurerCache.getHeight(index),
+                  width: cellMeasurerCache.getWidth(index),
+                  position: 'absolute',
+                  top,
+                  [rowDirection === 'ltr' ? 'left' : 'right']: left,
+                },
+              }),
+            );
+          }
         },
       );
     });

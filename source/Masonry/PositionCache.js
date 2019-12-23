@@ -41,16 +41,6 @@ export default class PositionCache {
     );
   }
 
-  getPositionByIndex(
-    index: number,
-    clientHeight: number,
-    renderCallback: RenderCallback,
-  ): void {
-    this.range(0, clientHeight, (_index, _left, _top) => {
-      if (index === _index) renderCallback(_index, _left, _top);
-    });
-  }
-
   setPosition(index: number, left: number, top: number, height: number): void {
     this._intervalTree.insert([top, top + height, index]);
     this._leftMap[index] = left;
