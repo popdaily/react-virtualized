@@ -43,14 +43,11 @@ export default class PositionCache {
 
   getPositionByIndex(
     index: number,
-    scrollTop: number,
     clientHeight: number,
     renderCallback: RenderCallback,
   ): void {
-    this.range(scrollTop, scrollTop + clientHeight, (_index, left, top) => {
-      if (index === _index) {
-        renderCallback(_index, left, top);
-      }
+    this.range(0, clientHeight, (_index, _left, _top) => {
+      if (index === _index) renderCallback(_index, _left, _top);
     });
   }
 
