@@ -322,32 +322,32 @@ var Masonry =
 
               console.log('fixed', fixed);
               fixed.forEach(function(fixedIndex) {
-                _this2._positionCache.range(
-                  0,
-                  height + overscanByPixels * 2,
-                  function(index, left, top) {
-                    if (fixedIndex === index) {
-                      children.push(
-                        cellRenderer({
-                          index: index,
-                          isScrolling: isScrolling,
-                          key: keyMapper(index),
-                          parent: _this2,
-                          style: _defineProperty(
-                            {
-                              height: cellMeasurerCache.getHeight(index),
-                              width: cellMeasurerCache.getWidth(index),
-                              position: 'absolute',
-                              top: top,
-                            },
-                            rowDirection === 'ltr' ? 'left' : 'right',
-                            left,
-                          ),
-                        }),
-                      );
-                    }
-                  },
-                );
+                _this2._positionCache.range(0, estimateTotalHeight, function(
+                  index,
+                  left,
+                  top,
+                ) {
+                  if (fixedIndex === index) {
+                    children.push(
+                      cellRenderer({
+                        index: index,
+                        isScrolling: isScrolling,
+                        key: keyMapper(index),
+                        parent: _this2,
+                        style: _defineProperty(
+                          {
+                            height: cellMeasurerCache.getHeight(index),
+                            width: cellMeasurerCache.getWidth(index),
+                            position: 'absolute',
+                            top: top,
+                          },
+                          rowDirection === 'ltr' ? 'left' : 'right',
+                          left,
+                        ),
+                      }),
+                    );
+                  }
+                });
               });
 
               this._positionCache.range(

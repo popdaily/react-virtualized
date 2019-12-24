@@ -6758,7 +6758,7 @@
                   fixed.forEach(function(fixedIndex) {
                     _this2._positionCache.range(
                       0,
-                      height + 2 * overscanByPixels,
+                      estimateTotalHeight,
                       function(index, left, top) {
                         fixedIndex === index &&
                           children.push(

@@ -208,7 +208,7 @@ class Masonry extends React.PureComponent<Props, State> {
     fixed.forEach(fixedIndex => {
       this._positionCache.range(
         0,
-        height + overscanByPixels * 2,
+        estimateTotalHeight,
         (index: number, left: number, top: number) => {
           if (fixedIndex === index) {
             children.push(
