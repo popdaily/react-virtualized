@@ -142,7 +142,7 @@ var GridExample =
         height: 300,
         gutterSize: 10,
         overscanByPixels: 0,
-        windowScrollerEnabled: true,
+        windowScrollerEnabled: false,
       };
       _this._cellRenderer = _this._cellRenderer.bind(
         (0, _assertThisInitialized2['default'])(_this),

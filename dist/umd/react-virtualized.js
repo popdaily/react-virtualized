@@ -6754,7 +6754,8 @@
                   measuredCellCount = this._positionCache.count,
                   startIndex = 0;
                 if (
-                  (fixed.forEach(function(fixedIndex) {
+                  (console.log('fixed', fixed),
+                  fixed.forEach(function(fixedIndex) {
                     _this2._positionCache.range(
                       0,
                       height + 2 * overscanByPixels,
