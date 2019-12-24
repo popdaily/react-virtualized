@@ -6754,8 +6754,7 @@
                   measuredCellCount = this._positionCache.count,
                   startIndex = 0;
                 if (
-                  (console.log('fixed', fixed),
-                  fixed.forEach(function(fixedIndex) {
+                  (fixed.forEach(function(fixedIndex) {
                     _this2._positionCache.range(
                       0,
                       estimateTotalHeight,

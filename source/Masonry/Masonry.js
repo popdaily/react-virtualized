@@ -204,7 +204,6 @@ class Masonry extends React.PureComponent<Props, State> {
     let stopIndex;
 
     // Render Fixed Cells
-    console.log('fixed', fixed);
     fixed.forEach(fixedIndex => {
       this._positionCache.range(
         0,

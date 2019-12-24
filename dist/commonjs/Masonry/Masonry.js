@@ -360,7 +360,6 @@ var Masonry =
               var startIndex = 0;
               var stopIndex; // Render Fixed Cells
 
-              console.log('fixed', fixed);
               fixed.forEach(function(fixedIndex) {
                 _this2._positionCache.range(0, estimateTotalHeight, function(
                   index,
