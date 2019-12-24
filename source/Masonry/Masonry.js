@@ -29,7 +29,7 @@ type Props = {
   tabIndex: number,
   width: number,
   rowDirection: string,
-  stamp: Array<any>,
+  fixed: Array<any>,
 };
 
 type State = {

@@ -723,7 +723,7 @@ var Masonry =
           tabIndex: _propTypes['default'].number.isRequired,
           width: _propTypes['default'].number.isRequired,
           rowDirection: _propTypes['default'].string.isRequired,
-          stamp: _propTypes['default'].arrayOf(function(
+          fixed: _propTypes['default'].arrayOf(function(
             props,
             propName,
             componentName,

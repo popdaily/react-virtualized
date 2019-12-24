@@ -674,7 +674,7 @@ var Masonry =
           tabIndex: PropTypes.number.isRequired,
           width: PropTypes.number.isRequired,
           rowDirection: PropTypes.string.isRequired,
-          stamp: PropTypes.arrayOf(function(props, propName, componentName) {
+          fixed: PropTypes.arrayOf(function(props, propName, componentName) {
             if (!Object.prototype.hasOwnProperty.call(props, propName)) {
               throw new Error(
                 'Prop `'
