@@ -910,31 +910,44 @@
               ),
             )),
           ),
-          '_measure',
-          function() {
-            var _this$props = _this.props,
-              cache = _this$props.cache,
-              _this$props$columnInd = _this$props.columnIndex,
-              columnIndex =
-                void 0 === _this$props$columnInd ? 0 : _this$props$columnInd,
-              parent = _this$props.parent,
-              _this$props$rowIndex = _this$props.rowIndex,
-              rowIndex =
-                void 0 === _this$props$rowIndex
-                  ? _this.props.index || 0
-                  : _this$props$rowIndex,
-              _this$_getCellMeasure = _this._getCellMeasurements(),
-              height = _this$_getCellMeasure.height,
-              width = _this$_getCellMeasure.width;
-            (height === cache.getHeight(rowIndex, columnIndex) &&
-              width === cache.getWidth(rowIndex, columnIndex)) ||
-              (cache.set(rowIndex, columnIndex, width, height),
-              parent &&
-                'function' == typeof parent.recomputeGridSize &&
-                parent.recomputeGridSize({
-                  columnIndex: columnIndex,
-                  rowIndex: rowIndex,
-                }));
+          '_child',
+          void 0,
+        ),
+        _defineProperty(_assertThisInitialized(_this), '_measure', function() {
+          var _this$props = _this.props,
+            cache = _this$props.cache,
+            _this$props$columnInd = _this$props.columnIndex,
+            columnIndex =
+              void 0 === _this$props$columnInd ? 0 : _this$props$columnInd,
+            parent = _this$props.parent,
+            _this$props$rowIndex = _this$props.rowIndex,
+            rowIndex =
+              void 0 === _this$props$rowIndex
+                ? _this.props.index || 0
+                : _this$props$rowIndex,
+            _this$_getCellMeasure = _this._getCellMeasurements(),
+            height = _this$_getCellMeasure.height,
+            width = _this$_getCellMeasure.width;
+          (height === cache.getHeight(rowIndex, columnIndex) &&
+            width === cache.getWidth(rowIndex, columnIndex)) ||
+            (cache.set(rowIndex, columnIndex, width, height),
+            parent &&
+              'function' == typeof parent.recomputeGridSize &&
+              parent.recomputeGridSize({
+                columnIndex: columnIndex,
+                rowIndex: rowIndex,
+              }));
+        }),
+        _defineProperty(
+          _assertThisInitialized(_this),
+          '_registerChild',
+          function(element) {
+            !element ||
+              element instanceof Element ||
+              console.warn(
+                'CellMeasurer registerChild expects to be passed Element or null',
+              ),
+              (_this._child = element) && _this._maybeMeasureCell();
           },
         ),
         _this
@@ -962,6 +975,7 @@
             return 'function' == typeof children
               ? children({
                   measure: this._measure,
+                  registerChild: this._registerChild,
                 })
               : children;
           },
@@ -970,7 +984,7 @@
           key: '_getCellMeasurements',
           value: function() {
             var cache = this.props.cache,
-              node = ReactDOM.findDOMNode(this);
+              node = this._child || ReactDOM.findDOMNode(this);
             if (
               node &&
               node.ownerDocument &&

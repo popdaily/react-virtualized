@@ -123,10 +123,12 @@ var DynamicHeightList =
               parent: parent,
             },
             function(_ref2) {
-              var measure = _ref2.measure;
+              var measure = _ref2.measure,
+                registerChild = _ref2.registerChild;
               return React.createElement(
                 'div',
                 {
+                  ref: registerChild,
                   className: classNames,
                   style: style,
                 },

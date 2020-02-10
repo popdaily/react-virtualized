@@ -45,6 +45,8 @@ var CellMeasurer =
           ),
         );
 
+        _defineProperty(_assertThisInitialized(_this), '_child', void 0);
+
         _defineProperty(_assertThisInitialized(_this), '_measure', function() {
           var _this$props = _this.props,
             cache = _this$props.cache,
@@ -77,6 +79,24 @@ var CellMeasurer =
           }
         });
 
+        _defineProperty(
+          _assertThisInitialized(_this),
+          '_registerChild',
+          function(element) {
+            if (element && !(element instanceof Element)) {
+              console.warn(
+                'CellMeasurer registerChild expects to be passed Element or null',
+              );
+            }
+
+            _this._child = element;
+
+            if (element) {
+              _this._maybeMeasureCell();
+            }
+          },
+        );
+
         return _this;
       }
 
@@ -100,6 +120,7 @@ var CellMeasurer =
             return typeof children === 'function'
               ? children({
                   measure: this._measure,
+                  registerChild: this._registerChild,
                 })
               : children;
           },
@@ -108,7 +129,7 @@ var CellMeasurer =
           key: '_getCellMeasurements',
           value: function _getCellMeasurements() {
             var cache = this.props.cache;
-            var node = findDOMNode(this); // TODO Check for a bad combination of fixedWidth and missing numeric width or vice versa with height
+            var node = this._child || findDOMNode(this); // TODO Check for a bad combination of fixedWidth and missing numeric width or vice versa with height
 
             if (
               node &&

@@ -20,13 +20,17 @@ var _CellMeasurerCache = _interopRequireWildcard(
 function mockClientWidthAndHeight(_ref) {
   var height = _ref.height,
     width = _ref.width;
+  var object =
+    arguments.length > 1 && arguments[1] !== undefined
+      ? arguments[1]
+      : HTMLElement.prototype;
   var heightFn = jest.fn().mockReturnValue(height);
   var widthFn = jest.fn().mockReturnValue(width);
-  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+  Object.defineProperty(object, 'offsetHeight', {
     configurable: true,
     get: heightFn,
   });
-  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+  Object.defineProperty(object, 'offsetWidth', {
     configurable: true,
     get: widthFn,
   });
@@ -203,7 +207,79 @@ describe('CellMeasurer', function() {
     expect(heightFn).toHaveBeenCalledTimes(0);
     expect(widthFn).toHaveBeenCalledTimes(0);
   });
-  it('componentDidUpdate() should pass a :measure param to a function child', function() {
+  it('registerChild() should measure content that is not already in the cache', function() {
+    var cache = new _CellMeasurerCache['default']({
+      fixedWidth: true,
+    });
+    var parent = createParent({
+      cache: cache,
+    });
+    var element = document.createElement('div');
+
+    var _mockClientWidthAndHe5 = mockClientWidthAndHeight(
+        {
+          height: 20,
+          width: 100,
+        },
+        element,
+      ),
+      heightFn = _mockClientWidthAndHe5.heightFn,
+      widthFn = _mockClientWidthAndHe5.widthFn;
+
+    expect(heightFn).toHaveBeenCalledTimes(0);
+    expect(widthFn).toHaveBeenCalledTimes(0);
+    expect(cache.has(0, 0)).toBe(false);
+    renderHelper({
+      cache: cache,
+      parent: parent,
+      children: function children(_ref4) {
+        var registerChild = _ref4.registerChild;
+        registerChild(element);
+        return null;
+      },
+    });
+    expect(parent.invalidateCellSizeAfterRender).toHaveBeenCalled();
+    expect(heightFn).toHaveBeenCalledTimes(1);
+    expect(widthFn).toHaveBeenCalledTimes(1);
+    expect(cache.has(0, 0)).toBe(true);
+    expect(cache.getWidth(0, 0)).toBe(100);
+    expect(cache.getHeight(0, 0)).toBe(20);
+  });
+  it('registerChild() should not measure content that is already in the cache', function() {
+    var cache = new _CellMeasurerCache['default']({
+      fixedWidth: true,
+    });
+    cache.set(0, 0, 100, 20);
+    var parent = createParent({
+      cache: cache,
+    });
+    var element = document.createElement('div');
+
+    var _mockClientWidthAndHe6 = mockClientWidthAndHeight(
+        {
+          height: 20,
+          width: 100,
+        },
+        element,
+      ),
+      heightFn = _mockClientWidthAndHe6.heightFn,
+      widthFn = _mockClientWidthAndHe6.widthFn;
+
+    expect(cache.has(0, 0)).toBe(true);
+    renderHelper({
+      cache: cache,
+      parent: parent,
+      children: function children(_ref5) {
+        var registerChild = _ref5.registerChild;
+        registerChild(element);
+        return null;
+      },
+    });
+    expect(parent.invalidateCellSizeAfterRender).not.toHaveBeenCalled();
+    expect(heightFn).toHaveBeenCalledTimes(0);
+    expect(widthFn).toHaveBeenCalledTimes(0);
+  });
+  it('should pass a :measure param to a function child', function() {
     var cache = new _CellMeasurerCache['default']({
       fixedWidth: true,
     });
@@ -254,8 +330,8 @@ describe('CellMeasurer', function() {
         React.createElement(
           _CellMeasurer['default'],
           {
-            ref: function ref(_ref4) {
-              measurer = _ref4;
+            ref: function ref(_ref6) {
+              measurer = _ref6;
             },
             cache: cache,
             columnIndex: 0,
