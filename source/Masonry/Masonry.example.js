@@ -267,6 +267,7 @@ export default class GridExample extends React.PureComponent {
         ref={this._setMasonryRef}
         scrollTop={this._scrollTop}
         width={width}
+        fixed={[7]}
       />
     );
   }

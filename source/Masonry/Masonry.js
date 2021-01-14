@@ -29,6 +29,7 @@ type Props = {
   tabIndex: number,
   width: number,
   rowDirection: string,
+  fixed: Array<any>,
 };
 
 type State = {
@@ -84,6 +85,7 @@ class Masonry extends React.PureComponent<Props, State> {
     style: emptyObject,
     tabIndex: 0,
     rowDirection: 'ltr',
+    fixed: [],
   };
 
   state = {
@@ -186,6 +188,7 @@ class Masonry extends React.PureComponent<Props, State> {
       tabIndex,
       width,
       rowDirection,
+      fixed,
     } = this.props;
 
     const {isScrolling, scrollTop} = this.state;
@@ -200,6 +203,33 @@ class Masonry extends React.PureComponent<Props, State> {
     let startIndex = 0;
     let stopIndex;
 
+    // Render Fixed Cells
+    fixed.forEach(fixedIndex => {
+      this._positionCache.range(
+        0,
+        estimateTotalHeight,
+        (index: number, left: number, top: number) => {
+          if (fixedIndex === index) {
+            children.push(
+              cellRenderer({
+                index,
+                isScrolling,
+                key: keyMapper(index),
+                parent: this,
+                style: {
+                  height: cellMeasurerCache.getHeight(index),
+                  width: cellMeasurerCache.getWidth(index),
+                  position: 'absolute',
+                  top,
+                  [rowDirection === 'ltr' ? 'left' : 'right']: left,
+                },
+              }),
+            );
+          }
+        },
+      );
+    });
+
     this._positionCache.range(
       Math.max(0, scrollTop - overscanByPixels),
       height + overscanByPixels * 2,
@@ -212,21 +242,23 @@ class Masonry extends React.PureComponent<Props, State> {
           stopIndex = Math.max(stopIndex, index);
         }
 
-        children.push(
-          cellRenderer({
-            index,
-            isScrolling,
-            key: keyMapper(index),
-            parent: this,
-            style: {
-              height: cellMeasurerCache.getHeight(index),
-              [rowDirection === 'ltr' ? 'left' : 'right']: left,
-              position: 'absolute',
-              top,
-              width: cellMeasurerCache.getWidth(index),
-            },
-          }),
-        );
+        if (!fixed.includes(index)) {
+          children.push(
+            cellRenderer({
+              index,
+              isScrolling,
+              key: keyMapper(index),
+              parent: this,
+              style: {
+                height: cellMeasurerCache.getHeight(index),
+                [rowDirection === 'ltr' ? 'left' : 'right']: left,
+                position: 'absolute',
+                top,
+                width: cellMeasurerCache.getWidth(index),
+              },
+            }),
+          );
+        }
       },
     );
 
